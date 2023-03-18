@@ -1,3 +1,3 @@
 import 'dotenv/config';
 
-export const { DATABASE_URL } = process.env;
+export const { DATABASE_URL, PORT } = process.env;
