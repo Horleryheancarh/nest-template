@@ -29,7 +29,12 @@
 ## Installation
 
 ```bash
+# modules installation
 $ yarn install
+
+# db migration
+$ yarn run db:dev
+
 ```
 
 ## Running the app

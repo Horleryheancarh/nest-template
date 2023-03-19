@@ -12,7 +12,6 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import {
   CreateMediaDto,
-  GetMediaPaginationDto,
   SearchMediaDto,
   UpdateMediaDto,
 } from './dtos/MediaDTO';
@@ -39,7 +38,6 @@ export class MediaController {
     @Query('page', ParseIntPipe) page: number,
     @Query('perPage', ParseIntPipe) perPage: number,
   ) {
-    console.log(page, perPage);
     const data = await this.mediaService.getMediaPagination({ page, perPage });
 
     return {

@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Media } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import {
   CreateMediaDto,
@@ -10,7 +11,7 @@ import {
 export class MediaService {
   constructor(private dbService: DatabaseService) {}
 
-  async createMedia(createMediaDto: CreateMediaDto) {
+  async createMedia(createMediaDto: CreateMediaDto): Promise<Media> {
     const media = this.dbService.media.create({
       data: {
         ...createMediaDto,
@@ -20,7 +21,7 @@ export class MediaService {
     return media;
   }
 
-  async getMediaPagination(data: GetMediaPaginationDto) {
+  async getMediaPagination(data: GetMediaPaginationDto): Promise<Array<Media>> {
     const { page, perPage } = data;
 
     const media = await this.dbService.media.findMany({
@@ -31,7 +32,7 @@ export class MediaService {
     return media;
   }
 
-  async getSingleMedia(id: number) {
+  async getSingleMedia(id: number): Promise<Media> {
     const media = await this.dbService.media.findUnique({
       where: {
         id,
@@ -43,7 +44,7 @@ export class MediaService {
     return media;
   }
 
-  async searchMedia(data: SearchMediaDto) {
+  async searchMedia(data: SearchMediaDto): Promise<Array<Media>> {
     const media = await this.dbService.media.findMany({
       where: {
         ...data,
@@ -53,7 +54,7 @@ export class MediaService {
     return media;
   }
 
-  async updateMedia(id: number, data: CreateMediaDto) {
+  async updateMedia(id: number, data: CreateMediaDto): Promise<Media> {
     let media = await this.dbService.media.findUnique({
       where: {
         id,
@@ -70,14 +71,20 @@ export class MediaService {
     return media;
   }
 
-  async deleteMedia(id: number) {
-    const media = await this.dbService.media.delete({
+  async deleteMedia(id: number): Promise<Media> {
+    let media = await this.dbService.media.findUnique({
       where: {
         id,
       },
     });
 
     if (!media) throw new NotFoundException('Media not found');
+
+    media = await this.dbService.media.delete({
+      where: {
+        id,
+      },
+    });
 
     return media;
   }
