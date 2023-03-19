@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaType, Status } from '@prisma/client';
-import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateMediaDto {
   @ApiProperty({
@@ -18,11 +18,11 @@ export class CreateMediaDto {
   @ApiProperty({
     required: true,
   })
-  @IsString()
+  @IsEnum(MediaType)
   type: MediaType;
 
   @ApiProperty()
-  @IsString()
+  @IsEnum(Status)
   @IsOptional()
   status: Status;
 
@@ -35,36 +35,13 @@ export class CreateMediaDto {
 export class GetMediaPaginationDto {
   @ApiProperty()
   @IsNumber()
-  page: number;
+  @IsOptional()
+  page?: number;
 
   @ApiProperty()
   @IsNumber()
-  perPage: number;
-
-  @ApiProperty()
-  @IsString()
   @IsOptional()
-  name: string;
-
-  @ApiProperty()
-  @IsUrl()
-  @IsOptional()
-  url: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  type: MediaType;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  status: Status;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  description: string;
+  perPage?: number;
 }
 
 export class SearchMediaDto {
@@ -79,12 +56,39 @@ export class SearchMediaDto {
   url: string;
 
   @ApiProperty()
-  @IsString()
+  @IsEnum(MediaType)
   @IsOptional()
   type: MediaType;
 
   @ApiProperty()
+  @IsEnum(Status)
+  @IsOptional()
+  status: Status;
+
+  @ApiProperty()
   @IsString()
+  @IsOptional()
+  description: string;
+}
+
+export class UpdateMediaDto {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiProperty()
+  @IsUrl()
+  @IsOptional()
+  url: string;
+
+  @ApiProperty()
+  @IsEnum(MediaType)
+  @IsOptional()
+  type: MediaType;
+
+  @ApiProperty()
+  @IsEnum(Status)
   @IsOptional()
   status: Status;
 

@@ -1,6 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
-import { CreateMediaDto } from './dtos/MediaDTO';
+import {
+  CreateMediaDto,
+  GetMediaPaginationDto,
+  SearchMediaDto,
+} from './dtos/MediaDTO';
 
 @Injectable()
 export class MediaService {
@@ -16,7 +20,7 @@ export class MediaService {
     return media;
   }
 
-  async getMediaPagination(data) {
+  async getMediaPagination(data: GetMediaPaginationDto) {
     const { page, perPage } = data;
 
     const media = await this.dbService.media.findMany({
@@ -28,7 +32,7 @@ export class MediaService {
   }
 
   async getSingleMedia(id: number) {
-    const media = this.dbService.media.findUnique({
+    const media = await this.dbService.media.findUnique({
       where: {
         id,
       },
@@ -39,7 +43,7 @@ export class MediaService {
     return media;
   }
 
-  async searchMedia(data) {
+  async searchMedia(data: SearchMediaDto) {
     const media = await this.dbService.media.findMany({
       where: {
         ...data,
@@ -66,12 +70,14 @@ export class MediaService {
     return media;
   }
 
-  async deleteMedia(id) {
+  async deleteMedia(id: number) {
     const media = await this.dbService.media.delete({
       where: {
         id,
       },
     });
+
+    if (!media) throw new NotFoundException('Media not found');
 
     return media;
   }

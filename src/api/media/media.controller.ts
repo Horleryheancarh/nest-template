@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -13,6 +14,7 @@ import {
   CreateMediaDto,
   GetMediaPaginationDto,
   SearchMediaDto,
+  UpdateMediaDto,
 } from './dtos/MediaDTO';
 import { MediaService } from './media.service';
 
@@ -21,45 +23,74 @@ import { MediaService } from './media.service';
 export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
-  @Post('media')
+  @Post('')
   async createMedia(@Body() body: CreateMediaDto) {
     const data = await this.mediaService.createMedia(body);
 
-    return { message: 'Post Endpoint', data };
+    return {
+      status: 'success',
+      message: 'Post Endpoint',
+      data,
+    };
   }
 
-  @Get('media')
-  async getMediaPagination(@Query() query: GetMediaPaginationDto) {
-    const data = await this.mediaService.getMediaPagination(query);
+  @Get('')
+  async getMediaPagination(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('perPage', ParseIntPipe) perPage: number,
+  ) {
+    console.log(page, perPage);
+    const data = await this.mediaService.getMediaPagination({ page, perPage });
 
-    return { message: 'Get Media Pagination Endpoint', data };
+    return {
+      status: 'success',
+      message: 'Get Media Pagination Endpoint',
+      data,
+    };
   }
 
-  @Get('media/:id')
-  async getSingleMedia(@Param() id: number) {
-    const data = await this.mediaService.getSingleMedia(id);
-
-    return { message: 'Get Single Media Endpoint', data };
-  }
-
-  @Get('media/search')
+  @Get('/search')
   async searchMedia(@Query() query: SearchMediaDto) {
+    console.log(query);
     const data = await this.mediaService.searchMedia(query);
 
-    return { message: 'Get Search Media Endpoint', data };
+    return {
+      status: 'success',
+      message: 'Get Search Media Endpoint',
+      data,
+    };
   }
 
-  @Patch('media/:id')
-  async updateMedia(@Param() id: number, @Body() body: CreateMediaDto) {
+  @Get(':id')
+  async getSingleMedia(@Param('id') id: number) {
+    const data = await this.mediaService.getSingleMedia(id);
+
+    return {
+      status: 'success',
+      message: 'Get Single Media Endpoint',
+      data,
+    };
+  }
+
+  @Patch(':id')
+  async updateMedia(@Param('id') id: number, @Body() body: UpdateMediaDto) {
     const data = await this.mediaService.updateMedia(id, body);
 
-    return { message: 'Patch Media Endpoint', data };
+    return {
+      status: 'success',
+      message: 'Patch Media Endpoint',
+      data,
+    };
   }
 
-  @Delete('media/:id')
-  async deleteMedia(@Param() id: number) {
+  @Delete(':id')
+  async deleteMedia(@Param('id') id: number) {
     const data = await this.mediaService.deleteMedia(id);
 
-    return { message: 'Delete Media Endpoint', data };
+    return {
+      status: 'success',
+      message: 'Delete Media Endpoint',
+      data,
+    };
   }
 }
