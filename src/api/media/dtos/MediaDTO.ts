@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MediaType, Status } from '@prisma/client';
-import { IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 
 export class CreateMediaDto {
   @ApiProperty({
@@ -32,4 +32,64 @@ export class CreateMediaDto {
   description: string;
 }
 
-export class GetMediaPaginationDto {}
+export class GetMediaPaginationDto {
+  @ApiProperty()
+  @IsNumber()
+  page: number;
+
+  @ApiProperty()
+  @IsNumber()
+  perPage: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiProperty()
+  @IsUrl()
+  @IsOptional()
+  url: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  type: MediaType;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  status: Status;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+}
+
+export class SearchMediaDto {
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  name: string;
+
+  @ApiProperty()
+  @IsUrl()
+  @IsOptional()
+  url: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  type: MediaType;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  status: Status;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+}

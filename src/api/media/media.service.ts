@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateMediaDto } from './dtos/MediaDTO';
 
@@ -16,39 +16,63 @@ export class MediaService {
     return media;
   }
 
-  async getMediaPagination() {
-    return { message: 'Get Media Pagination Endpoint' };
+  async getMediaPagination(data) {
+    const { page, perPage } = data;
+
+    const media = await this.dbService.media.findMany({
+      skip: page,
+      take: perPage,
+    });
+
+    return media;
   }
 
   async getSingleMedia(id: number) {
-    const media = this.dbService.media.findFirst({
+    const media = this.dbService.media.findUnique({
       where: {
         id,
+      },
+    });
+
+    if (!media) throw new NotFoundException('Media not found');
+
+    return media;
+  }
+
+  async searchMedia(data) {
+    const media = await this.dbService.media.findMany({
+      where: {
+        ...data,
       },
     });
 
     return media;
   }
 
-  async searchMedia() {
-    return { message: 'Get Search Media Endpoint' };
-  }
-
-  async updateMedia(id: number, body: CreateMediaDto) {
-    const data = await this.dbService.media.update();
-
-    data
-
-    return data;
-  }
-
-  async deleteMedia(id) {
-    const data = await this.dbService.media.delete({
+  async updateMedia(id: number, data: CreateMediaDto) {
+    let media = await this.dbService.media.findUnique({
       where: {
         id,
       },
     });
 
-    return data;
+    if (!media) throw new NotFoundException('Media not found');
+
+    media = await this.dbService.media.update({
+      where: { id },
+      data: { ...data },
+    });
+
+    return media;
+  }
+
+  async deleteMedia(id) {
+    const media = await this.dbService.media.delete({
+      where: {
+        id,
+      },
+    });
+
+    return media;
   }
 }

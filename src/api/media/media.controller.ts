@@ -6,9 +6,14 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { CreateMediaDto } from './dtos/MediaDTO';
+import {
+  CreateMediaDto,
+  GetMediaPaginationDto,
+  SearchMediaDto,
+} from './dtos/MediaDTO';
 import { MediaService } from './media.service';
 
 @Controller('media')
@@ -24,8 +29,10 @@ export class MediaController {
   }
 
   @Get('media')
-  async getMediaPagination() {
-    return await this.mediaService.getMediaPagination();
+  async getMediaPagination(@Query() query: GetMediaPaginationDto) {
+    const data = await this.mediaService.getMediaPagination(query);
+
+    return { message: 'Get Media Pagination Endpoint', data };
   }
 
   @Get('media/:id')
@@ -36,15 +43,17 @@ export class MediaController {
   }
 
   @Get('media/search')
-  async searchMedia() {
-    return await this.mediaService.searchMedia();
+  async searchMedia(@Query() query: SearchMediaDto) {
+    const data = await this.mediaService.searchMedia(query);
+
+    return { message: 'Get Search Media Endpoint', data };
   }
 
   @Patch('media/:id')
   async updateMedia(@Param() id: number, @Body() body: CreateMediaDto) {
     const data = await this.mediaService.updateMedia(id, body);
 
-    return { message: 'Patch Media Endpoint' };
+    return { message: 'Patch Media Endpoint', data };
   }
 
   @Delete('media/:id')
